@@ -1,0 +1,8 @@
+<Engine>
+	<Routes>
+		<Route>
+			Some content
+		</Route>
+		<Route/>
+	</Routes>
+</Engine>
