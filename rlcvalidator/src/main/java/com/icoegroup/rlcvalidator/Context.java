@@ -13,6 +13,7 @@ import javax.xml.transform.sax.SAXSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -27,6 +28,8 @@ public class Context {
 
 	@Value("${rlcfile.name}")
 	String rlcFileName;
+	
+	String rlcName;
 	
 	private FileInputStream rlcInputStream;
 
@@ -78,5 +81,15 @@ public class Context {
 
 		}
 		return domDocument;
+	}
+
+	public void setRlcFileName(String rlcFileName) {
+		this.rlcFileName = rlcFileName.replace('\'', '/');
+		rlcName = rlcFileName.indexOf('/') != -1 ? rlcFileName
+				.substring(rlcFileName.lastIndexOf('/')+1,
+						rlcFileName.indexOf('.')) : rlcFileName.substring(0,
+				rlcFileName.indexOf('.'));
+		MDC.put("rlcname", rlcName);
+
 	}
 }

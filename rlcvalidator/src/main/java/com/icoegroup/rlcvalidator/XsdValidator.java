@@ -30,20 +30,23 @@ public class XsdValidator extends Validator {
 
 		public void fatalError(SAXParseException exception) throws SAXException {
 			hasError = true;
-			log.error("ERROR: " + exception.getMessage());
+			XsdValidator.this.error(exception.getMessage());
 			
 		}
 
 		public void error(SAXParseException exception) throws SAXException {
 			hasError = true;
-			log.error("ERROR: " + exception.getMessage());
+			XsdValidator.this.error(exception.getMessage());
 		}
 	}
 
 	String schemaName;
 	private Schema schema;
 
-	private XsdValidator(String schemaName) {
+	public XsdValidator() {
+		super();
+	}
+	public XsdValidator(String schemaName) {
 		super();
 		this.schemaName = schemaName;
 		ClassPathResource schemaRes = new ClassPathResource(schemaName);
@@ -52,7 +55,7 @@ public class XsdValidator extends Validator {
 					XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(
 					new SAXSource(new InputSource(schemaRes.getInputStream())));
 		} catch (Exception e) {
-			log.error("Can't read schema: ", e);
+			error("Can't read schema: ", e);
 			throw new ValidatorConfigurationException(e);
 		}
 	}
@@ -72,13 +75,11 @@ public class XsdValidator extends Validator {
 			result = false;
 		}
 		if (result && !errorHandler.hasError) {
-			log.info("Validation successful.");
+			info("Validation successful.");
 		} else {
-			log.info("Validation failed.");
+			error("Validation failed.");
 		}
 		return result && !errorHandler.hasError;
-
-
 	}
 
 	protected String getSchemaName() {

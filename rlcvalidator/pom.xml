@@ -20,11 +20,8 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.5</version>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.7.5</version>
-		</dependency>
+		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-jdk14</artifactId> 
+			<version>1.7.5</version> </dependency> -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -41,6 +38,36 @@
 			<artifactId>commons-cli</artifactId>
 			<version>1.2</version>
 		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.13</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>1.0.13</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>3.0.6.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<version>2.2.2</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -52,27 +79,16 @@
 						<index>true</index>
 						<manifest>
 							<mainClass>com.icoegroup.rlcvalidator.RlcValidator</mainClass>
-<!-- 							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
- -->						</manifest>
+							<!-- <addClasspath>true</addClasspath> <classpathPrefix>lib/</classpathPrefix> -->
+						</manifest>
 					</archive>
 				</configuration>
 			</plugin>
-<!-- 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
- -->			<plugin>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-dependency-plugin</artifactId> 
+				<executions> <execution> <goals> <goal>copy-dependencies</goal> </goals> 
+				<configuration> <outputDirectory>${project.build.directory}/lib</outputDirectory> 
+				</configuration> </execution> </executions> </plugin> -->
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -80,30 +96,13 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
-<!-- 			<plugin>
-				NOTE: We don't need a groupId specification because the group is 
-					org.apache.maven.plugins ...which is assumed by default.
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>com.icoegroup.rlcvalidator.RlcValidator</mainClass>
-						</manifest>
-					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
- -->			<plugin>
+			<!-- <plugin> NOTE: We don't need a groupId specification because the 
+				group is org.apache.maven.plugins ...which is assumed by default. <artifactId>maven-assembly-plugin</artifactId> 
+				<configuration> <archive> <manifest> <mainClass>com.icoegroup.rlcvalidator.RlcValidator</mainClass> 
+				</manifest> </archive> <descriptorRefs> <descriptorRef>jar-with-dependencies</descriptorRef> 
+				</descriptorRefs> </configuration> <executions> <execution> <phase>package</phase> 
+				<goals> <goal>single</goal> </goals> </execution> </executions> </plugin> -->
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>2.1</version>
