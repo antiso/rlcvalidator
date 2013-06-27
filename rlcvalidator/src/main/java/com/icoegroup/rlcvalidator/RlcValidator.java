@@ -26,13 +26,15 @@ public class RlcValidator {
 		ctx.registerShutdownHook();
 		ctx.getBean(Context.class).setRlcFileName(args[0]);
 		Map<String, Validator> validators = ctx.getBeansOfType(Validator.class);
-
 		Set<String> validatorBeanNames = validators.keySet();
 		for (String validatorName : validatorBeanNames) {
-			log.info(Validator.VALIDATION_KEY, "Executing validator: "
+			log.info(Validator.VALIDATION_INFO, "Executing validator: "
 					+ validatorName);
 			try {
-				validators.get(validatorName).validate();
+				if (!validators.get(validatorName).validate())
+					log.info(Validator.VALIDATION_INFO, "Execution failed: "
+							+ validatorName);
+
 			} catch (Throwable e) {
 
 			}

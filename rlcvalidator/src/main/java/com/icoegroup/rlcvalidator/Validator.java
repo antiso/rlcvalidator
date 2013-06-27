@@ -8,16 +8,16 @@ import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class Validator implements BeanNameAware {
-	
 
-	private static final Marker VALIDATION_INFO = MarkerFactory.getMarker("VALIDATION_INFO");
+	public static final Marker VALIDATION_INFO = MarkerFactory
+			.getMarker("VALIDATION_INFO");
 
 	public static final String VALIDATION_KEY = "validator";
 
-	protected Logger log = LoggerFactory.getLogger(getClass()); 
-	
+	protected Logger log = LoggerFactory.getLogger(getClass());
+
 	@Autowired
-	private Context ctx;
+	protected Context ctx;
 
 	private String beanName;
 
@@ -28,9 +28,9 @@ public abstract class Validator implements BeanNameAware {
 	public void setValidationContext(Context ctx) {
 		this.ctx = ctx;
 	}
-	
+
 	public abstract boolean validate();
-	
+
 	public void info(String format, Object arg) {
 		log.info(VALIDATION_INFO, format, arg);
 	}
@@ -51,6 +51,11 @@ public abstract class Validator implements BeanNameAware {
 		log.error(VALIDATION_INFO, msg, t);
 	}
 
+	public void error(Throwable t) {
+		log.error(VALIDATION_INFO, t.getCause() != null ? t.getCause()
+				.getMessage() : t.getMessage(), t);
+	}
+
 	public void error(String format, Object... arguments) {
 		log.error(VALIDATION_INFO, format, arguments);
 	}
@@ -62,7 +67,5 @@ public abstract class Validator implements BeanNameAware {
 	protected String getBeanName() {
 		return beanName;
 	}
-	
-	
 
 }

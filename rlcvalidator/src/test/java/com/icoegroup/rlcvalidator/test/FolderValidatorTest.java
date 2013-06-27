@@ -1,44 +1,43 @@
 package com.icoegroup.rlcvalidator.test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.icoegroup.rlcvalidator.Context;
+import com.icoegroup.rlcvalidator.XPathValidator;
 import com.icoegroup.rlcvalidator.XsdValidator;
 
-public class XsdValidatorTest {
+public class FolderValidatorTest {
 
-	private ApplicationContext ctx;
+	private ClassPathXmlApplicationContext ctx;
 	private Context validationContext;
-	private XsdValidator xsdValidator;
+	private XPathValidator xpathValidator;
 
-	
 	@Before
 	public void initContext() {
 		ctx = new ClassPathXmlApplicationContext(
 				"classpath:rlcvalidator.xml");
 		validationContext = ctx.getBean(Context.class);
-		xsdValidator = (XsdValidator) ctx.getBean("RouteValidator");
-	}
-	
-	
-	@Test
-	public void testRoutes() {
-		String rlcFileName = "src/test/resources/testfiles/routes.xml";
-		validationContext.setRlcFileName(rlcFileName);
-		assertTrue(xsdValidator.validate());
-	}
-	
-	@Test
-	public void testIncorrectRoutes() {
-		String rlcFileName = "src/test/resources/testfiles/routes_err.xml";
-		validationContext.setRlcFileName(rlcFileName);
-		assertTrue(!xsdValidator.validate());
-		
+		xpathValidator = (XPathValidator) ctx.getBean("FolderValidator");
 	}
 
+	
+	@Test
+	public void testValidateFolders() {
+		String rlcFileName = "src/test/resources/testfiles/routes.xml";
+		validationContext.setRlcFileName(rlcFileName);
+		assertTrue(xpathValidator.validate());
+	}
+
+	@Test
+	public void testErrValidateFolders() {
+		String rlcFileName = "src/test/resources/testfiles/routes_err.xml";
+		validationContext.setRlcFileName(rlcFileName);
+		assertTrue(!xpathValidator.validate());
+	}
 }

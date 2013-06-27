@@ -17,5 +17,9 @@
 		<constructor-arg><value>schema/routes.xsd</value></constructor-arg>
 	</bean>
 	
+	<bean name="FolderValidator" class="com.icoegroup.rlcvalidator.FolderValidator">
+		<property name="xpath" value="/Engine/Routes/Route/Folder/text()"></property>
+	</bean>
+
 	<bean class="com.icoegroup.rlcvalidator.ValidatorAspect" />
 </beans>

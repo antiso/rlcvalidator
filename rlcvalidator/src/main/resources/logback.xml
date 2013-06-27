@@ -3,35 +3,23 @@
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			<Pattern>%d{HH:mm:ss.SSS} [%X{validator}] %-5level %logger{36} - %msg%n
 			</Pattern>
 		</layout>
 	</appender>
 
-	<appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+	<appender name="SIFT_TXT" class="ch.qos.logback.classic.sift.SiftingAppender">
 		<!-- in the absence of the class attribute, it is assumed that the desired 
 			discriminator type is ch.qos.logback.classic.sift.MDCBasedDiscriminator -->
 		<discriminator>
 			<key>rlcname</key>
 			<defaultValue>unknown</defaultValue>
 		</discriminator>
+		<evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+			<marker>VALIDATION_INFO</marker>
+		</evaluator>
 		<sift>
-			<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-				<evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
-					<marker>VALIDATION_INFO</marker>
-				</evaluator>
-				<append>false</append>
-				<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-					<layout class="ch.qos.logback.classic.html.HTMLLayout">
-						<pattern>%mdc{validator}%level%msg</pattern>
-					</layout>
-				</encoder>
-				<file>${rlcname}.html</file>
-			</appender>
 			<appender name="FILE_TXT" class="ch.qos.logback.core.FileAppender">
-				<evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
-					<marker>VALIDATION_INFO</marker>
-				</evaluator>
 				<append>false</append>
 				<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
 					<layout class="ch.qos.logback.classic.PatternLayout">
@@ -43,8 +31,32 @@
 		</sift>
 	</appender>
 
+	<appender name="SIFT_HTML" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<!-- in the absence of the class attribute, it is assumed that the desired 
+			discriminator type is ch.qos.logback.classic.sift.MDCBasedDiscriminator -->
+		<discriminator>
+			<key>rlcname</key>
+			<defaultValue>unknown</defaultValue>
+		</discriminator>
+		<evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+			<marker>VALIDATION_INFO</marker>
+		</evaluator>
+		<sift>
+			<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+				<append>false</append>
+				<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+					<layout class="ch.qos.logback.classic.html.HTMLLayout">
+						<pattern>%X{validator}%level%msg</pattern>
+					</layout>
+				</encoder>
+				<file>${rlcname}.html</file>
+			</appender>
+		</sift>
+	</appender>
+
 	<root level="debug">
 		<appender-ref ref="STDOUT" />
-		<appender-ref ref="SIFT" />
+		<appender-ref ref="SIFT_TXT" />
+		<appender-ref ref="SIFT_HTML" />
 	</root>
 </configuration>

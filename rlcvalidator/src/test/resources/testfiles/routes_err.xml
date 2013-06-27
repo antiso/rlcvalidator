@@ -3,6 +3,8 @@
 		<Route>
 			Some content
 		</Route>
-		<Route/>
+		<Route>
+			<Folder>sdfsdf;routes</Folder>
+		</Route>		
 	</Routes>
 </Engine>
