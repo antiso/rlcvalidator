@@ -1,5 +1,10 @@
 <?xml version="1.0" ?>
 <Engine xmlns="xz">
+    <CommPoints>
+    	<CommPoint>
+			<Folder>sdfsdf;routes</Folder>
+    	</CommPoint>
+    </CommPoints>
 	<Routes>
 		<Route name="sdfsdfsdf">
 			<Folder>sdfsdf;routes</Folder>

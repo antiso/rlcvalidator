@@ -21,5 +21,9 @@
 		<property name="xpath" value="/Engine/Routes/Route/Folder/text()"></property>
 	</bean>
 
+	<bean name="CommPointsFolderValidator" class="com.icoegroup.rlcvalidator.EqualsXpathValidator">
+		<property name="xpath" value="/Engine/Routes/Route/Folder/text()|Engine/CommPoints/CommPoint/Folder/text()"></property>
+	</bean>
+
 	<bean class="com.icoegroup.rlcvalidator.ValidatorAspect" />
 </beans>

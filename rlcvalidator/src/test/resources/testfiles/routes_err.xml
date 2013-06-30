@@ -1,4 +1,9 @@
 <Engine>
+    <CommPoints>
+    	<CommPoint>
+			<Folder>sdfsdf;comm_routes</Folder>
+    	</CommPoint>
+    </CommPoints>
 	<Routes>
 		<Route>
 			Some content
