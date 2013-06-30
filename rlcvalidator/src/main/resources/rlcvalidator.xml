@@ -24,6 +24,9 @@
 	<bean name="CommPointsFolderValidator" class="com.icoegroup.rlcvalidator.EqualsXpathValidator">
 		<property name="xpath" value="/Engine/Routes/Route/Folder/text()|Engine/CommPoints/CommPoint/Folder/text()"></property>
 	</bean>
+	<bean name="FilesSectionNotExistsValidator" class="com.icoegroup.rlcvalidator.NodeNotExistentXpathValidator">
+		<property name="xpath" value="/Engine/Files"></property>
+	</bean>
 
 	<bean class="com.icoegroup.rlcvalidator.ValidatorAspect" />
 </beans>
