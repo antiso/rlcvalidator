@@ -21,6 +21,16 @@
 		<property name="xpath" value="/Engine/Routes/Route/Folder/text()"></property>
 	</bean>
 
+	<bean name="TCPServerValueValidator" class="com.icoegroup.rlcvalidator.ValueXpathValidator">
+		<property name="xpath" value="/Engine/CommPoints/CommPoint[Type='TCPServer']/Configuration/Property[Name='LOCALHOST']/Value/text()"></property>
+		<property name="refValue" value="$(EngineName)"></property>
+	</bean>
+
+	<bean name="TCPClientValueValidator" class="com.icoegroup.rlcvalidator.ValueXpathValidator">
+		<property name="xpath" value="/Engine/CommPoints/CommPoint[Type='TCPClient']/Configuration/Property[Name='LOCALHOST']/Value/text()"></property>
+		<property name="refValue" value="$(EngineName)"></property>
+	</bean>
+
 	<bean name="CommPointsFolderValidator" class="com.icoegroup.rlcvalidator.EqualsXpathValidator">
 		<property name="xpath" value="/Engine/Routes/Route/Folder/text()|Engine/CommPoints/CommPoint/Folder/text()"></property>
 	</bean>
