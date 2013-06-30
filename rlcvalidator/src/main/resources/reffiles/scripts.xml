@@ -1,13 +1,7 @@
-<?xml version="1.0" ?>
-<Engine xmlns="xz">
-    <CommPoints>
-    	<CommPoint>
-			<Folder>sdfsdf;routes</Folder>
-    	</CommPoint>
-    </CommPoints>
-	<Routes>
-		<Route name="sdfsdfsdf">
-			<Folder>sdfsdf;routes</Folder>
+<?xml version="1.0" encoding="UTF-8"?>
+<Engine>
+  <Routes>
+    <Route>
       <Filters>
         <Filter>
           <Type>ExecuteScript</Type>
@@ -55,7 +49,6 @@ if (body.substr(0,3) == "MSH") {
           
 </Filter>
 </Filters>
-		</Route>
-	</Routes>
-	<test/>
+</Route>
+</Routes>
 </Engine>

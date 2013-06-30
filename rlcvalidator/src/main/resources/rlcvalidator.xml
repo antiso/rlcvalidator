@@ -16,6 +16,14 @@
 	<bean name="RouteValidator" class="com.icoegroup.rlcvalidator.XsdValidator">
 		<constructor-arg><value>schema/routes.xsd</value></constructor-arg>
 	</bean>
+
+	<bean name="CreateAckScriptValidator" class="com.icoegroup.rlcvalidator.ContentCompareValidator">
+		<property name="xpath" value="/Engine/Routes/Route/Filters/Filter[Type='ExecuteScript']/parent::Filters/Filter/GeneralProperties/Property[Name='UserName'][Value='Create ACK']/../../Configuration/Property/Value/text()"></property>
+		<property name="refFileName">
+			<value>reffiles/scripts.xml</value>
+		</property>
+	</bean>
+
 	
 	<bean name="FolderValidator" class="com.icoegroup.rlcvalidator.FolderValidator">
 		<property name="xpath" value="/Engine/Routes/Route/Folder/text()"></property>
