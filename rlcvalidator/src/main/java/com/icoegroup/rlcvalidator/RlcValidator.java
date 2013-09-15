@@ -30,7 +30,6 @@ public class RlcValidator {
 	 */
 	public static void main(String[] args) {
 
-		ctx = new ClassPathXmlApplicationContext("classpath:rlcvalidator.xml");
 		initOptions();
 		String profileName = "default";
 		String rlcFileName = null;
@@ -55,7 +54,6 @@ public class RlcValidator {
 		}
 		loadContext(profileName);
 
-		ctx.registerShutdownHook();
 		try {
 			ctx.getBean(Context.class).setRlcFileName(rlcFileName);
 		} catch (ValidatorConfigurationException e) {
@@ -83,16 +81,13 @@ public class RlcValidator {
 
 	private static void loadContext(String profileName) {
 		try {
-			ClassPathXmlApplicationContext profileContext = new ClassPathXmlApplicationContext();
-			profileContext.setParent(ctx);
-			profileContext.setConfigLocation(profileName + ".profile");
-			profileContext.refresh();
-			ctx = profileContext;
+			ctx = new ClassPathXmlApplicationContext(profileName + ".profile");
+			ctx.registerShutdownHook();
 		} catch (Exception e) {
 			if (e.getCause() instanceof IOException) {
-				System.err.println("Can't load profile: " + profileName);
+				log.error("Can't load profile: " + profileName);
 			} else {
-				e.printStackTrace();
+				log.error("Can't load Spring configuration", e);
 			}
 			System.exit(INCORRECT_PROFILE);
 		}
