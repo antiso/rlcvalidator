@@ -236,9 +236,6 @@ public class XsdValidator extends Validator {
 			error(e.getMessage(), e);
 			result = false;
 		}
-		if (!(result && !errorHandler.hasError)) {
-			error("Validation failed.");
-		}
 		return result && !errorHandler.hasError;
 	}
 
