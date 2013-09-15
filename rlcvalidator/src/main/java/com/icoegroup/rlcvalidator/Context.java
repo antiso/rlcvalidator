@@ -131,6 +131,9 @@ public class Context implements ApplicationContextAware {
 		rlcName = rlcFileName.indexOf('/') != -1 ? rlcFileName.substring(
 				rlcFileName.lastIndexOf('/') + 1, rlcFileName.indexOf('.'))
 				: rlcFileName.substring(0, rlcFileName.indexOf('.'));
+		if (!getRlcFile().exists()) {
+			throw new ValidatorConfigurationException("No such file: " + rlcFileName);
+		}
 		MDC.put("rlcname", rlcName);
 	}
 

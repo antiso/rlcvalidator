@@ -21,6 +21,9 @@ import org.springframework.core.io.ClassPathResource;
 
 public class RlcValidator {
 
+	private static final int INCORRECT_FILE_NAME = 3;
+	private static final int INCORRECT_PROFILE = 2;
+	private static final int INCORRECT_OPTIONS = 1;
 	static Logger log = LoggerFactory.getLogger(RlcValidator.class);
 	private static Options options;
 	private static AbstractApplicationContext ctx;
@@ -41,7 +44,7 @@ public class RlcValidator {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter
 						.printHelp("rlcvalidator [options] <rlcfile>", options);
-				System.exit(1);
+				System.exit(INCORRECT_OPTIONS);
 			}
 			if (cmd.hasOption("P")) {
 				profileName = cmd.getOptionValue("P");
@@ -49,13 +52,19 @@ public class RlcValidator {
 			rlcFileName = cmd.getArgs()[0];
 		} catch (ParseException e1) {
 			HelpFormatter formatter = new HelpFormatter();
+			System.out.println("Error: " + e1.getMessage());
 			formatter.printHelp("rlcvalidator [options] <rlcfile>", options);
-			System.exit(1);
+			System.exit(INCORRECT_OPTIONS);
 		}
 		loadContext(profileName);
 
 		ctx.registerShutdownHook();
-		ctx.getBean(Context.class).setRlcFileName(rlcFileName);
+		try {
+			ctx.getBean(Context.class).setRlcFileName(rlcFileName);
+		} catch (ValidatorConfigurationException e) {
+			System.err.println(e.getMessage());
+			System.exit(INCORRECT_FILE_NAME);
+		}
 		ValidationProfile profile = ctx.getBeansOfType(ValidationProfile.class)
 				.entrySet().iterator().next().getValue();
 		List<Validator> validators = profile.getValidators();
@@ -68,6 +77,8 @@ public class RlcValidator {
 							+ validator.getBeanName());
 
 			} catch (Throwable e) {
+				log.error(Validator.VALIDATION_INFO, "Failed to execute validator: "
+						+ validator.getBeanName(), e);
 
 			}
 		}
@@ -86,7 +97,7 @@ public class RlcValidator {
 			} else {
 				e.printStackTrace();
 			}
-			System.exit(2);
+			System.exit(INCORRECT_PROFILE);
 		}
 	}
 
@@ -95,7 +106,8 @@ public class RlcValidator {
 		options = new Options();
 		options.addOption("h", false, "print help");
 		Option profile = OptionBuilder.withArgName("profile").hasArg()
-				.withDescription("use validation profile").create("P");
+				.withDescription("use specified validation profile\n\t" +
+						"'default' profile used by default").create("P");
 		options.addOption(profile);
 	}
 }
