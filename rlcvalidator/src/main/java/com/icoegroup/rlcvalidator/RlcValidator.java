@@ -67,10 +67,7 @@ public class RlcValidator {
 			log.info("Executing validator: "
 					+ validator.getBeanName());
 			try {
-				if (!validator.validate())
-					log.info("Execution failed: "
-							+ validator.getBeanName());
-
+				validator.validate();
 			} catch (Throwable e) {
 				log.error(Validator.VALIDATION_INFO, "Failed to execute validator: "
 						+ validator.getBeanName(), e);

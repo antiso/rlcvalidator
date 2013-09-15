@@ -15,15 +15,19 @@
 			<key>rlcname</key>
 			<defaultValue>unknown</defaultValue>
 		</discriminator>
-		<evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
-			<marker>VALIDATION_INFO</marker>
-		</evaluator>
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+				<marker>VALIDATION_INFO</marker>
+			</evaluator>
+			<OnMismatch>DENY</OnMismatch>
+			<OnMatch>ACCEPT</OnMatch>
+		</filter>
 		<sift>
 			<appender name="FILE_TXT" class="ch.qos.logback.core.FileAppender">
 				<append>false</append>
 				<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
 					<layout class="ch.qos.logback.classic.PatternLayout">
-						<pattern>%level [%X{validator}]  - %msg%n</pattern>
+						<pattern>%level [%X{validator}] - %msg%n</pattern>
 					</layout>
 				</encoder>
 				<file>${rlcname}.txt</file>
@@ -38,15 +42,19 @@
 			<key>rlcname</key>
 			<defaultValue>unknown</defaultValue>
 		</discriminator>
-		<evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
-			<marker>VALIDATION_INFO</marker>
-		</evaluator>
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+				<marker>VALIDATION_INFO</marker>
+			</evaluator>
+			<OnMismatch>DENY</OnMismatch>
+			<OnMatch>ACCEPT</OnMatch>
+		</filter>
 		<sift>
 			<appender name="FILE" class="ch.qos.logback.core.FileAppender">
 				<append>false</append>
 				<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
 					<layout class="ch.qos.logback.classic.html.HTMLLayout">
-						<pattern>%X{validator}%level%msg</pattern>
+						<pattern>%level%X{validator}%msg</pattern>
 					</layout>
 				</encoder>
 				<file>${rlcname}.html</file>
