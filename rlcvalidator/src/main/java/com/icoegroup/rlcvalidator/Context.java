@@ -52,8 +52,26 @@ public class Context implements ApplicationContextAware {
 	}
 
 	public InputStream getRlcInputStream() {
+		if (rlcInputStream != null) {
+			if (rlcInputStream.markSupported()) {
+				try {
+					rlcInputStream.reset();
+					return rlcInputStream;
+				} catch (IOException e) {
+					log.warn("InputStream repoted mark support but can't reset()");
+				}
+			} else {
+				try {
+					rlcInputStream.close();
+				} catch (IOException e) {
+					log.warn(e.getMessage());
+				}
+			}
+		}
 		if (!getRlcFile().getName().endsWith(".xml"))
 			try {
+				// Closed on context close
+				@SuppressWarnings("resource")
 				ZipFile zipFile = new ZipFile(getRlcFile());
 				Enumeration<? extends ZipEntry> entries = zipFile.entries();
 				ZipEntry exportedEntry = null;
@@ -74,7 +92,8 @@ public class Context implements ApplicationContextAware {
 
 				rlcInputStream = zipFile.getInputStream(exportedEntry);
 			} catch (IOException e) {
-				log.error("Can't read RLC file '" + getRlcFileName() + "':" + e.getMessage());
+				log.error("Can't read RLC file '" + getRlcFileName() + "':"
+						+ e.getMessage());
 				throw new ValidatorConfigurationException(e);
 			}
 		else {
@@ -85,6 +104,8 @@ public class Context implements ApplicationContextAware {
 				throw new ValidatorConfigurationException(e);
 			}
 		}
+		if (rlcInputStream.markSupported())
+			rlcInputStream.mark(Integer.MAX_VALUE);
 		return rlcInputStream;
 	}
 
@@ -132,7 +153,8 @@ public class Context implements ApplicationContextAware {
 				rlcFileName.lastIndexOf('/') + 1, rlcFileName.indexOf('.'))
 				: rlcFileName.substring(0, rlcFileName.indexOf('.'));
 		if (!getRlcFile().exists()) {
-			throw new ValidatorConfigurationException("No such file: " + rlcFileName);
+			throw new ValidatorConfigurationException("No such file: "
+					+ rlcFileName);
 		}
 		MDC.put("rlcname", rlcName);
 	}
@@ -141,19 +163,27 @@ public class Context implements ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		this.applicationContext = (AbstractApplicationContext) applicationContext;
-		this.applicationContext.addApplicationListener(new ApplicationListener<ApplicationEvent>() {
+		this.applicationContext
+				.addApplicationListener(new ApplicationListener<ApplicationEvent>() {
 
-			@Override
-			public void onApplicationEvent(ApplicationEvent event) {
-				if (event instanceof ContextClosedEvent) {
-					System.out.println("Context closed.");
-					LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-					lc.stop();
-				}
-			}
-		});
-		
-		
+					@Override
+					public void onApplicationEvent(ApplicationEvent event) {
+						if (event instanceof ContextClosedEvent) {
+							if (rlcInputStream != null) {
+								try {
+									rlcInputStream.close();
+								} catch (IOException e) {
+									log.warn(e.getMessage());
+								}
+							}
+							System.out.println("Context closed.");
+							LoggerContext lc = (LoggerContext) LoggerFactory
+									.getILoggerFactory();
+							lc.stop();
+						}
+					}
+				});
+
 	}
 
 	public String getRlcName() {
