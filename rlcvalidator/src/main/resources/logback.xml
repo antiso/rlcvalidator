@@ -23,7 +23,7 @@
 				<append>false</append>
 				<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
 					<layout class="ch.qos.logback.classic.PatternLayout">
-						<pattern>%d [%X{validator}] %level %logger{35} - %msg%n</pattern>
+						<pattern>%level [%X{validator}]  - %msg%n</pattern>
 					</layout>
 				</encoder>
 				<file>${rlcname}.txt</file>

@@ -60,11 +60,11 @@ public class RlcValidator {
 				.entrySet().iterator().next().getValue();
 		List<Validator> validators = profile.getValidators();
 		for (Validator validator : validators) {
-			log.info(Validator.VALIDATION_INFO, "Executing validator: "
+			log.info("Executing validator: "
 					+ validator.getBeanName());
 			try {
 				if (!validator.validate())
-					log.info(Validator.VALIDATION_INFO, "Execution failed: "
+					log.info("Execution failed: "
 							+ validator.getBeanName());
 
 			} catch (Throwable e) {
