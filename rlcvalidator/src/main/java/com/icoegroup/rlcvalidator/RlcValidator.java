@@ -30,6 +30,8 @@ public class RlcValidator {
 	 */
 	public static void main(String[] args) {
 
+		java.util.logging.Logger.getLogger("org.springframework").setLevel(
+				java.util.logging.Level.SEVERE);
 		initOptions();
 		String profileName = "default";
 		String rlcFileName = null;
@@ -64,13 +66,14 @@ public class RlcValidator {
 				.entrySet().iterator().next().getValue();
 		List<Validator> validators = profile.getValidators();
 		for (Validator validator : validators) {
-			log.info("Executing validator: "
-					+ validator.getBeanName());
+			log.info("Executing validator: " + validator.getBeanName());
 			try {
 				validator.validate();
 			} catch (Throwable e) {
-				log.error(Validator.VALIDATION_INFO, "Failed to execute validator: "
-						+ validator.getBeanName(), e);
+				log.error(
+						Validator.VALIDATION_INFO,
+						"Failed to execute validator: "
+								+ validator.getBeanName(), e);
 
 			}
 		}
@@ -94,9 +97,13 @@ public class RlcValidator {
 	private static void initOptions() {
 		options = new Options();
 		options.addOption("h", false, "print help");
-		Option profile = OptionBuilder.withArgName("profile").hasArg()
-				.withDescription("use specified validation profile\n\t" +
-						"'default' profile used by default").create("P");
+		Option profile = OptionBuilder
+				.withArgName("profile")
+				.hasArg()
+				.withDescription(
+						"use specified validation profile\n\t"
+								+ "'default' profile used by default")
+				.create("P");
 		options.addOption(profile);
 	}
 }

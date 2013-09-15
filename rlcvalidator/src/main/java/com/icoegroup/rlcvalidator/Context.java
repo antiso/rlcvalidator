@@ -176,7 +176,6 @@ public class Context implements ApplicationContextAware {
 									log.warn(e.getMessage());
 								}
 							}
-							System.out.println("Context closed.");
 							LoggerContext lc = (LoggerContext) LoggerFactory
 									.getILoggerFactory();
 							lc.stop();
