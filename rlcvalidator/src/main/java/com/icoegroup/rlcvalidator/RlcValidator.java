@@ -30,8 +30,6 @@ public class RlcValidator {
 	 */
 	public static void main(String[] args) {
 
-		java.util.logging.Logger.getLogger("org.springframework").setLevel(
-				java.util.logging.Level.SEVERE);
 		initOptions();
 		String profileName = "default";
 		String rlcFileName = null;
