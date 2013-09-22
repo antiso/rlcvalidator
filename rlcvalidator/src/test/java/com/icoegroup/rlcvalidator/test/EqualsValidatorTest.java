@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.icoegroup.rlcvalidator.Context;
+import com.icoegroup.rlcvalidator.IValidator;
 import com.icoegroup.rlcvalidator.XPathValidator;
 import com.icoegroup.rlcvalidator.XsdValidator;
 
@@ -16,14 +17,14 @@ public class EqualsValidatorTest {
 
 	private ClassPathXmlApplicationContext ctx;
 	private Context validationContext;
-	private XPathValidator xpathValidator;
+	private IValidator xpathValidator;
 
 	@Before
 	public void initContext() {
 		ctx = new ClassPathXmlApplicationContext(
 				"classpath:rlcvalidator.xml");
 		validationContext = ctx.getBean(Context.class);
-		xpathValidator = (XPathValidator) ctx.getBean("CommPointsFolderValidator");
+		xpathValidator = (IValidator) ctx.getBean("CommPointsFolderValidator");
 	}
 
 	

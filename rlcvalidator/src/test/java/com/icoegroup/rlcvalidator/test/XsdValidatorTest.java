@@ -8,13 +8,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.icoegroup.rlcvalidator.Context;
+import com.icoegroup.rlcvalidator.IValidator;
 import com.icoegroup.rlcvalidator.XsdValidator;
 
 public class XsdValidatorTest {
 
 	private ApplicationContext ctx;
 	private Context validationContext;
-	private XsdValidator xsdValidator;
+	private IValidator xsdValidator;
 
 	
 	@Before
@@ -22,7 +23,7 @@ public class XsdValidatorTest {
 		ctx = new ClassPathXmlApplicationContext(
 				"classpath:rlcvalidator.xml");
 		validationContext = ctx.getBean(Context.class);
-		xsdValidator = (XsdValidator) ctx.getBean("RouteValidator");
+		xsdValidator = (IValidator) ctx.getBean("RouteValidator");
 	}
 	
 	

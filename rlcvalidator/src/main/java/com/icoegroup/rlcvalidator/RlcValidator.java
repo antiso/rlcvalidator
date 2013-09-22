@@ -1,8 +1,5 @@
 package com.icoegroup.rlcvalidator;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -13,6 +10,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -36,57 +34,58 @@ public class RlcValidator {
 		CommandLineParser parser = new PosixParser();
 		try {
 			CommandLine cmd = parser.parse(options, args);
-			if (cmd.hasOption("h") || cmd.getArgs().length == 0) {
+			if (cmd.hasOption("h") || (cmd.getArgs().length == 0 && !cmd.hasOption("p"))) {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter
 						.printHelp("rlcvalidator [options] <rlcfile>", options);
 				System.exit(INCORRECT_OPTIONS);
 			}
+			if (cmd.hasOption("p")) {
+				System.setProperty("rlcvalidator.properties.file",
+						"file:///" + cmd.getOptionValue("p"));
+			}
 			if (cmd.hasOption("P")) {
 				profileName = cmd.getOptionValue("P");
 			}
-			rlcFileName = cmd.getArgs()[0];
+			if (cmd.getArgs().length !=0 ) rlcFileName = cmd.getArgs()[0];
 		} catch (ParseException e1) {
 			HelpFormatter formatter = new HelpFormatter();
 			System.out.println("Error: " + e1.getMessage());
 			formatter.printHelp("rlcvalidator [options] <rlcfile>", options);
 			System.exit(INCORRECT_OPTIONS);
 		}
-		loadContext(profileName);
+		loadContext();
 
 		try {
-			ctx.getBean(Context.class).setRlcFileName(rlcFileName);
+			final Context validationContext = ctx.getBean(Context.class);
+			if (rlcFileName == null/*
+					&& !"".equals(validatoinContext.getRlcFileName())*/)
+				rlcFileName = validationContext
+						.getRlcFileName();
+			validationContext.setRlcFileName(rlcFileName);
+			if ("default".equals(profileName))
+				profileName = validationContext.getProfileName();
+
 		} catch (ValidatorConfigurationException e) {
 			System.err.println(e.getMessage());
 			System.exit(INCORRECT_FILE_NAME);
 		}
-		ValidationProfile profile = ctx.getBeansOfType(ValidationProfile.class)
-				.entrySet().iterator().next().getValue();
-		List<Validator> validators = profile.getValidators();
-		for (Validator validator : validators) {
-			log.info("Executing validator: " + validator.getBeanName());
-			try {
-				validator.validate();
-			} catch (Throwable e) {
-				log.error(
-						Validator.VALIDATION_INFO,
-						"Failed to execute validator: "
-								+ validator.getBeanName(), e);
-
-			}
+		IValidator profile = null;
+		try {
+			profile = (IValidator) ctx.getBean(profileName);
+		} catch (BeansException e) {
+			log.error("Can't load validation profile: ", e);
+			System.exit(INCORRECT_PROFILE);
 		}
+		profile.validate();
 	}
 
-	private static void loadContext(String profileName) {
+	private static void loadContext() {
 		try {
-			ctx = new ClassPathXmlApplicationContext(profileName + ".profile");
+			ctx = new ClassPathXmlApplicationContext("rlcvalidator.xml");
 			ctx.registerShutdownHook();
 		} catch (Exception e) {
-			if (e.getCause() instanceof IOException) {
-				log.error("Can't load profile: " + profileName);
-			} else {
-				log.error("Can't load Spring configuration", e);
-			}
+			log.error("Can't load Spring configuration", e);
 			System.exit(INCORRECT_PROFILE);
 		}
 	}
@@ -95,13 +94,16 @@ public class RlcValidator {
 	private static void initOptions() {
 		options = new Options();
 		options.addOption("h", false, "print help");
-		Option profile = OptionBuilder
+		Option option = OptionBuilder
 				.withArgName("profile")
 				.hasArg()
 				.withDescription(
 						"use specified validation profile\n\t"
 								+ "'default' profile used by default")
 				.create("P");
-		options.addOption(profile);
+		options.addOption(option);
+		option = OptionBuilder.withArgName("property file").hasArg()
+				.withDescription("use specified properties file").create("p");
+		options.addOption(option);
 	}
 }

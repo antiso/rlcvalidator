@@ -9,7 +9,6 @@
 	<enableImports><![CDATA[true]]></enableImports>
 	<configs>
 		<config>src/main/resources/rlcvalidator.xml</config>
-		<config>src/main/resources/default.profile</config>
 	</configs>
 	<configSets>
 	</configSets>

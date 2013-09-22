@@ -2,17 +2,10 @@ package com.icoegroup.rlcvalidator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class Validator implements BeanNameAware {
-
-	public static final Marker VALIDATION_INFO = MarkerFactory
-			.getMarker("VALIDATION_INFO");
-
-	public static final String VALIDATION_KEY = "validator";
+public abstract class Validator implements BeanNameAware, IValidator {
 
 	protected Logger log = LoggerFactory.getLogger(getClass());
 
@@ -29,6 +22,10 @@ public abstract class Validator implements BeanNameAware {
 		this.ctx = ctx;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.icoegroup.rlcvalidator.IValidator#validate()
+	 */
+	@Override
 	public abstract boolean validate();
 
 	public void info(String format, Object arg) {

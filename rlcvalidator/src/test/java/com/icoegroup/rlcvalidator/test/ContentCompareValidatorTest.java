@@ -10,6 +10,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.icoegroup.rlcvalidator.ContentCompareValidator;
 import com.icoegroup.rlcvalidator.Context;
+import com.icoegroup.rlcvalidator.IValidator;
 import com.icoegroup.rlcvalidator.Validator;
 import com.icoegroup.rlcvalidator.XsdValidator;
 
@@ -17,14 +18,14 @@ public class ContentCompareValidatorTest {
 
 	private ApplicationContext ctx;
 	private Context validationContext;
-	private ContentCompareValidator contentValidator;
+	private IValidator contentValidator;
 
 	@Before
 	public void initContext() {
 		ctx = new ClassPathXmlApplicationContext(
 				"classpath:rlcvalidator.xml");
 		validationContext = ctx.getBean(Context.class);
-		contentValidator = (ContentCompareValidator) ctx.getBean("CreateAckScriptValidator");
+		contentValidator = (IValidator) ctx.getBean("CreateAckScriptValidator");
 	}
 
 	@Test

@@ -1,50 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-	
-	<context:property-placeholder location="classpath:rlcvalidator.properties" system-properties-mode="OVERRIDE"/>
-	
-	<aop:aspectj-autoproxy proxy-target-class="true"/>
-	
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<bean id="defaultProps"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<array>
+				<value>#{ systemProperties['rlcvalidator.properties.file']!=null ? systemProperties['rlcvalidator.properties.file']: 'classpath:rlcvalidator.properties'}</value>
+			</array>
+		</property>
+		<!-- Just a sample -->
+		<property name="properties">
+			<util:properties local-override="true">
+				<prop key="some.property">some value</prop>
+			</util:properties>
+		</property>
+	</bean>
+	<context:property-placeholder properties-ref="defaultProps"
+		system-properties-mode="OVERRIDE" />
+
+
+	<aop:aspectj-autoproxy />
+
 	<context:component-scan base-package="com.icoegroup.rlcvalidator" />
-	
+
 	<bean name="RouteValidator" class="com.icoegroup.rlcvalidator.XsdValidator">
-		<constructor-arg><value>schema/routes.xsd</value></constructor-arg>
+		<constructor-arg>
+			<value>schema/routes.xsd</value>
+		</constructor-arg>
 	</bean>
 
 	<bean name="CreateAckScriptValidator" class="com.icoegroup.rlcvalidator.ContentCompareValidator">
-		<property name="xpath" value="/Engine/Routes/Route/Filters/Filter[Type='ExecuteScript']/parent::Filters/Filter/GeneralProperties/Property[Name='UserName'][Value='Create ACK']/../../Configuration/Property/Value/text()"></property>
+		<property name="xpath"
+			value="/Engine/Routes/Route/Filters/Filter[Type='ExecuteScript']/parent::Filters/Filter/GeneralProperties/Property[Name='UserName'][Value='Create ACK']/../../Configuration/Property/Value/text()"></property>
 		<property name="refFileName">
 			<value>reffiles/scripts.xml</value>
 		</property>
 	</bean>
 
-	
+
 	<bean name="FolderValidator" class="com.icoegroup.rlcvalidator.FolderValidator">
 		<property name="xpath" value="/Engine/Routes/Route/Folder/text()"></property>
 	</bean>
 
 	<bean name="TCPServerValueValidator" class="com.icoegroup.rlcvalidator.ValueXpathValidator">
-		<property name="xpath" value="/Engine/CommPoints/CommPoint[Type='TCPServer']/Configuration/Property[Name='LOCALHOST']/Value/text()"></property>
+		<property name="xpath"
+			value="/Engine/CommPoints/CommPoint[Type='TCPServer']/Configuration/Property[Name='LOCALHOST']/Value/text()"></property>
 		<property name="refValue" value="$(EngineName)"></property>
 	</bean>
 
 	<bean name="TCPClientValueValidator" class="com.icoegroup.rlcvalidator.ValueXpathValidator">
-		<property name="xpath" value="/Engine/CommPoints/CommPoint[Type='TCPClient']/Configuration/Property[Name='LOCALHOST']/Value/text()"></property>
+		<property name="xpath"
+			value="/Engine/CommPoints/CommPoint[Type='TCPClient']/Configuration/Property[Name='LOCALHOST']/Value/text()"></property>
 		<property name="refValue" value="$(EngineName)"></property>
 	</bean>
 
 	<bean name="CommPointsFolderValidator" class="com.icoegroup.rlcvalidator.EqualsXpathValidator">
-		<property name="xpath" value="/Engine/Routes/Route/Folder/text()|Engine/CommPoints/CommPoint/Folder/text()"></property>
+		<property name="xpath"
+			value="/Engine/Routes/Route/Folder/text()|Engine/CommPoints/CommPoint/Folder/text()"></property>
 	</bean>
-	<bean name="FilesSectionNotExistsValidator" class="com.icoegroup.rlcvalidator.NodeNotExistentXpathValidator">
+	<bean name="FilesSectionNotExistsValidator"
+		class="com.icoegroup.rlcvalidator.NodeNotExistentXpathValidator">
 		<property name="xpath" value="/Engine/Files"></property>
 	</bean>
 
 	<bean class="com.icoegroup.rlcvalidator.ValidatorAspect" />
+
+	<bean name="DefaultProfile" class="com.icoegroup.rlcvalidator.ValidationProfile">
+		<property name="validators">
+			<list>
+				<ref bean="RouteValidator" />
+				<ref bean="CreateAckScriptValidator" />
+				<ref bean="FolderValidator" />
+				<ref bean="TCPServerValueValidator" />
+				<ref bean="TCPClientValueValidator" />
+				<ref bean="CommPointsFolderValidator" />
+				<ref bean="FilesSectionNotExistsValidator" />
+			</list>
+		</property>
+	</bean>
+	<alias name="DefaultProfile" alias="default" />
 </beans>

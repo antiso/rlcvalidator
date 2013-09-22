@@ -42,6 +42,9 @@ public class Context implements ApplicationContextAware {
 	@Value("${rlcfile.name}")
 	String rlcFileName;
 
+	@Value("${profile.name}")
+	String profileName;
+
 	String rlcName;
 
 	private InputStream rlcInputStream;
@@ -148,6 +151,8 @@ public class Context implements ApplicationContextAware {
 	}
 
 	public void setRlcFileName(String rlcFileName) {
+		if (rlcFileName == null || rlcFileName.length() == 0)
+			throw new ValidatorConfigurationException("Empty RLC file name.");
 		this.rlcFileName = rlcFileName.replace('\'', '/');
 		rlcName = rlcFileName.indexOf('/') != -1 ? rlcFileName.substring(
 				rlcFileName.lastIndexOf('/') + 1, rlcFileName.indexOf('.'))
@@ -191,5 +196,9 @@ public class Context implements ApplicationContextAware {
 
 	public void setRlcName(String rlcName) {
 		this.rlcName = rlcName;
+	}
+
+	public String getProfileName() {
+		return profileName;
 	}
 }
