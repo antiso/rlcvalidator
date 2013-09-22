@@ -1,8 +1,12 @@
 package com.icoegroup.rlcvalidator;
 
+import java.util.HashMap;
+
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
@@ -12,6 +16,22 @@ import org.slf4j.MDC;
 @Aspect
 public class ValidatorAspect {
 	private static Logger log = LoggerFactory.getLogger(Validator.class);
+
+	private HashMap<Object, Boolean> processed = new HashMap<Object, Boolean>();
+
+	@Around("execution(* com.icoegroup.rlcvalidator.IValidator.validate())")
+	public Object filterValidators(ProceedingJoinPoint pjp) throws Throwable {
+		if (processed.containsKey(pjp.getTarget())) {
+			log.info(IValidator.VALIDATION_INFO,
+					"Validator skipped since already it's executed already (see results above).");
+			return processed.containsKey(pjp.getTarget());
+		}
+		processed.put(pjp.getTarget(), false);
+		Object retVal = pjp.proceed();
+		processed.put(pjp.getTarget(), (Boolean) retVal);
+		// stop stopwatch
+		return retVal;
+	}
 
 	@Before("execution(* com.icoegroup.rlcvalidator.IValidator.validate())")
 	public void enableValidationLogging(JoinPoint joinPoint) {
