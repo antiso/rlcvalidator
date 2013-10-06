@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 @Aspect
-public class ValidatorAspect {
+public class ValidationAspect {
 	private static Logger log = LoggerFactory.getLogger(Validator.class);
 
 	private HashMap<Object, Boolean> processed = new HashMap<Object, Boolean>();
@@ -29,7 +29,6 @@ public class ValidatorAspect {
 		processed.put(pjp.getTarget(), false);
 		Object retVal = pjp.proceed();
 		processed.put(pjp.getTarget(), (Boolean) retVal);
-		// stop stopwatch
 		return retVal;
 	}
 

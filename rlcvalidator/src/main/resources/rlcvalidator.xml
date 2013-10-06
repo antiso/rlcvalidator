@@ -30,12 +30,19 @@
 	<context:component-scan base-package="com.icoegroup.rlcvalidator" />
 
 	<bean name="RouteValidator" class="com.icoegroup.rlcvalidator.XsdValidator">
+	<description>Checks that each descriptor refers to one and only one route.
+Manifests as one instance of Engine/Routes/Route
+	</description>
 		<constructor-arg>
 			<value>schema/routes.xsd</value>
 		</constructor-arg>
 	</bean>
 
 	<bean name="CreateAckScriptValidator" class="com.icoegroup.rlcvalidator.ContentCompareValidator">
+	<description>This validator checks that Create Ack JavaScript Filter contains the endorsed Java Script code from the template project. 
+	It has not been modified by a developer.
+    This filter is identified by type = "ExecuteScript" and name = "Create ACK" 
+    The Xpath identifying this filter is: Engine/Routes/Route/Filters/Filter[Type='ExecuteScript']/parent::Filters/Filter/GeneralProperties/Property[Name='UserName'][Value='Create ACK']/../../Configuration/Property/Value</description>
 		<property name="xpath"
 			value="/Engine/Routes/Route/Filters/Filter[Type='ExecuteScript']/parent::Filters/Filter/GeneralProperties/Property[Name='UserName'][Value='Create ACK']/../../Configuration/Property/Value/text()"></property>
 		<property name="refFileName">
@@ -45,33 +52,48 @@
 
 
 	<bean name="FolderValidator" class="com.icoegroup.rlcvalidator.FolderValidator">
+	<description>Checks that the RLC Archive name and project it contains match.
+Manifested by the leaf folder is the same as the root archive file names (without the ".rlc" extension"
+XPath: Engine/Routes/Route/Folder@text()
+Value: &lt;Folder>IA;Mercy Des Moines </description>
 		<property name="xpath" value="/Engine/Routes/Route/Folder/text()"></property>
 	</bean>
 
 	<bean name="TCPServerValueValidator" class="com.icoegroup.rlcvalidator.ValueXpathValidator">
+	<description>Checks that LOCALHOST property must be $(EngineName).
+XPath: Engine/CommPoints/CommPoint[Type='TCPServer']/Configuration/Property[Name='LOCALHOST']/Value</description>
 		<property name="xpath"
 			value="/Engine/CommPoints/CommPoint[Type='TCPServer']/Configuration/Property[Name='LOCALHOST']/Value/text()"></property>
 		<property name="refValue" value="$(EngineName)"></property>
 	</bean>
 
 	<bean name="TCPClientValueValidator" class="com.icoegroup.rlcvalidator.ValueXpathValidator">
+	<description>Checks that LOCALHOST property must be $(EngineName).
+XPath: Engine/CommPoints/CommPoint[Type='TCPClient']/Configuration/Property[Name='LOCALHOST']/Value</description>
 		<property name="xpath"
 			value="/Engine/CommPoints/CommPoint[Type='TCPClient']/Configuration/Property[Name='LOCALHOST']/Value/text()"></property>
 		<property name="refValue" value="$(EngineName)"></property>
 	</bean>
 
 	<bean name="CommPointsFolderValidator" class="com.icoegroup.rlcvalidator.EqualsXpathValidator">
+	<description>Checks that a leaf project export shall not include components (Comm Points) from other project folders.
+Engine/Routes/Route/Folder is the subject of the export activity and the folder property value for all other components must be the same
+Engine/CommPoints/CommPoint/Folder</description>
 		<property name="xpath"
 			value="/Engine/Routes/Route/Folder/text()|Engine/CommPoints/CommPoint/Folder/text()"></property>
 	</bean>
 	<bean name="FilesSectionNotExistsValidator"
 		class="com.icoegroup.rlcvalidator.NodeNotExistentXpathValidator">
+		<description>Checks that a descriptor shall not include a provided dependency.
+When the export option [Automatically detect and save custom modules that are in use] is selected, the provided dependencies are included in the archive, and referenced in the descriptor instead the user shall select the following option [Manaully select custom modules according to options below]
+This genrally manifest as Engine/Files Xpath must not exist</description>
 		<property name="xpath" value="/Engine/Files"></property>
 	</bean>
 
-	<bean class="com.icoegroup.rlcvalidator.ValidatorAspect" />
+	<bean class="com.icoegroup.rlcvalidator.ValidationAspect" />
 
 	<bean name="DefaultProfile" class="com.icoegroup.rlcvalidator.ValidationProfile">
+	<description>Simple profile with all validators.</description>
 		<property name="validators">
 			<list>
 				<ref bean="RouteValidator" />
